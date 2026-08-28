@@ -46,6 +46,12 @@ urlpatterns = [
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
+    # Project App URLs
+    path('api/accounts/', include('accounts.urls')),
+    path('api/fleet/', include('fleet.urls')),
+    path('api/bookings/', include('bookings.urls')),
+    path('api/analytics/', include('dashboard_analytics.urls')),
+    path('api/automations/', include('ai_automations.urls')),
 ]
 
 if settings.DEBUG:

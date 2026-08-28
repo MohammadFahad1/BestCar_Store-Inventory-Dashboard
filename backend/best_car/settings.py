@@ -45,6 +45,12 @@ INSTALLED_APPS = [
     'rest_framework',
     'drf_yasg',
     'rest_framework_simplejwt',
+    # Project Local Apps
+    'accounts',
+    'fleet',
+    'bookings',
+    'dashboard_analytics',
+    'ai_automations',
 ]
 
 MIDDLEWARE = [
