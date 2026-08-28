@@ -64,6 +64,9 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+# Custom User Model
+AUTH_USER_MODEL = 'accounts.User'
+
 ROOT_URLCONF = 'best_car.urls'
 
 TEMPLATES = [
