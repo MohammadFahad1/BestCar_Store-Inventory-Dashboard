@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ChevronDown, ArrowUp, Check } from 'lucide-react';
 import { ComposableMap, Geographies, Geography } from 'react-simple-maps';
 import worldGeoData from '../data/world-110m.json';
+import { dashboardApi } from '../services/api';
 
 interface RegionInfo {
   regionName: string;
@@ -73,11 +74,35 @@ export const SalesByCountriesCard: React.FC = () => {
   const [timeFilter, setTimeFilter] = useState('This Week');
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [selectedKey, setSelectedKey] = useState<string>('Africa');
+  const [apiData, setApiData] = useState<Record<string, RegionInfo> | null>(null);
 
   const filterOptions = ['This Week', 'This Month', 'This Quarter', 'This Year'];
 
-  const currentDataset = SALES_DATA[timeFilter] || SALES_DATA['This Week'];
-  const activeInfo = currentDataset[selectedKey] || currentDataset['Africa'];
+  useEffect(() => {
+    const rangeKeyMap: Record<string, string> = {
+      'This Week': 'week',
+      'This Month': 'month',
+      'This Quarter': 'quarter',
+      'This Year': 'year',
+    };
+    const key = rangeKeyMap[timeFilter] || 'week';
+    dashboardApi.getSalesByCountry(key).then((data) => {
+      if (data && data.length > 0) {
+        const transformed: Record<string, RegionInfo> = {};
+        data.forEach((c) => {
+          transformed[c.name] = {
+            regionName: c.name,
+            sales: c.salesCount,
+            headerBg: c.colorTier === 'orange' ? ORANGE_COLOR : NAVY_COLOR,
+          };
+        });
+        setApiData(transformed);
+      }
+    });
+  }, [timeFilter]);
+
+  const currentDataset = apiData || SALES_DATA[timeFilter] || SALES_DATA['This Week'];
+  const activeInfo = currentDataset[selectedKey] || currentDataset['Africa'] || { regionName: 'Africa', sales: 3455, headerBg: NAVY_COLOR };
 
   const getCountryFill = (geoId: string) => {
     if (HIGHLIGHTED_NAVY_IDS.has(geoId)) {

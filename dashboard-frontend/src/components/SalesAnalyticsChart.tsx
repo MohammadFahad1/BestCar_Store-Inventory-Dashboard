@@ -1,17 +1,27 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Calendar, ChevronDown, Check } from 'lucide-react';
 import { monthlySalesData } from '../data/mockData';
+import { dashboardApi } from '../services/api';
 
 interface SalesAnalyticsChartProps {
   className?: string;
 }
 
 export const SalesAnalyticsChart: React.FC<SalesAnalyticsChartProps> = ({ className = '' }) => {
-  const [selectedYear, setSelectedYear] = useState('2023');
+  const [selectedYear, setSelectedYear] = useState('2024');
   const [isYearDropdownOpen, setIsYearDropdownOpen] = useState(false);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const [chartData, setChartData] = useState<{ month: string; sales: number }[]>(monthlySalesData);
 
   const years = ['2024', '2023', '2022', '2021'];
+
+  useEffect(() => {
+    dashboardApi.getSalesChart(selectedYear).then((data) => {
+      if (data && data.length > 0) {
+        setChartData(data);
+      }
+    });
+  }, [selectedYear]);
 
   // Dimensions & scaling
   const width = 640;
@@ -24,13 +34,14 @@ export const SalesAnalyticsChart: React.FC<SalesAnalyticsChartProps> = ({ classN
   const chartWidth = width - paddingLeft - paddingRight;
   const chartHeight = height - paddingTop - paddingBottom;
 
-  // Max scale is 60k (0 to 60)
-  const maxY = 60;
-  const yTicks = [10, 20, 30, 40, 50, 60];
+  // Max scale is 70k (0 to 70)
+  const maxY = 70;
+  const yTicks = [10, 20, 30, 40, 50, 60, 70];
 
   // Calculate coordinates for points
-  const points = monthlySalesData.map((d, index) => {
-    const x = paddingLeft + (index / (monthlySalesData.length - 1)) * chartWidth;
+  const activeDataset = chartData.length > 0 ? chartData : monthlySalesData;
+  const points = activeDataset.map((d, index) => {
+    const x = paddingLeft + (index / (activeDataset.length - 1)) * chartWidth;
     const y = paddingTop + chartHeight - (d.sales / maxY) * chartHeight;
     return { x, y, data: d };
   });
@@ -229,10 +240,10 @@ export const SalesAnalyticsChart: React.FC<SalesAnalyticsChartProps> = ({ classN
               {points[hoveredIndex].data.month} {selectedYear}
             </div>
             <div className="text-[11px] text-slate-300">
-              Revenue: <span className="font-semibold text-white">${points[hoveredIndex].data.revenue.toLocaleString()}</span>
+              Revenue: <span className="font-semibold text-white">${((points[hoveredIndex].data.sales || points[hoveredIndex].data.revenue || 0) * 1000).toLocaleString()}</span>
             </div>
             <div className="text-[10px] text-slate-400">
-              {points[hoveredIndex].data.units} vehicles sold
+              {points[hoveredIndex].data.units || Math.round((points[hoveredIndex].data.sales || 0) * 12)} vehicles rented
             </div>
           </div>
         )}

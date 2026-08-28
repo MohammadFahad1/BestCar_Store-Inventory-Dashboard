@@ -7,6 +7,7 @@ import {
   ChevronRight,
 } from 'lucide-react';
 import { Car } from '../types';
+import { websiteApi } from '../services/api';
 
 interface AiAssistantWidgetProps {
   cars: Car[];
@@ -63,27 +64,26 @@ export const AiAssistantWidget: React.FC<AiAssistantWidgetProps> = ({
     setMessages(newMessages);
     if (!queryText) setInputText('');
 
-    // AI Recommendation Logic
-    setTimeout(() => {
-      const lower = textToSend.toLowerCase();
-      let matchedCars: Car[] = [];
-      let aiText = '';
+    // Query Backend DRF AI Concierge API
+    websiteApi.queryAiConcierge(textToSend).then((res) => {
+      let matchedCars = res.vehicles;
+      let aiText = res.text;
 
-      if (lower.includes('family') || lower.includes('7') || lower.includes('space') || lower.includes('suv')) {
-        matchedCars = cars.filter((c) => c.type === 'SUV' || c.seats >= 5).slice(0, 2);
-        aiText = "Great! Here are our top spacious SUV options perfect for family trips & luggage:";
-      } else if (lower.includes('luxury') || lower.includes('premium') || lower.includes('sport')) {
-        matchedCars = cars.filter((c) => c.type === 'Luxury' || c.pricePerDay >= 120).slice(0, 2);
-        aiText = "Here are our premium luxury models with top-tier performance & luxury features:";
-      } else if (lower.includes('budget') || lower.includes('cheap') || lower.includes('100')) {
-        matchedCars = cars.filter((c) => c.pricePerDay <= 95).slice(0, 2);
-        aiText = "Here are our best budget-friendly rental options under $100/day:";
-      } else if (lower.includes('electric') || lower.includes('range') || lower.includes('ev')) {
-        matchedCars = cars.filter((c) => c.fuelType === 'Electric' || c.fuelType === 'Hybrid').slice(0, 2);
-        aiText = "Here are our eco-friendly electric & hybrid models with excellent range:";
-      } else {
-        matchedCars = [cars[0], cars[1]].filter(Boolean);
-        aiText = `Based on your request "${textToSend}", I highly recommend checking out these featured rentals:`;
+      if (!aiText || matchedCars.length === 0) {
+        const lower = textToSend.toLowerCase();
+        if (lower.includes('family') || lower.includes('7') || lower.includes('space') || lower.includes('suv')) {
+          matchedCars = cars.filter((c) => c.type === 'SUV' || c.seats >= 5).slice(0, 2);
+          aiText = "Great! Here are our top spacious SUV options perfect for family trips & luggage:";
+        } else if (lower.includes('luxury') || lower.includes('premium') || lower.includes('sport')) {
+          matchedCars = cars.filter((c) => c.type === 'Luxury' || c.pricePerDay >= 120).slice(0, 2);
+          aiText = "Here are our premium luxury models with top-tier performance & luxury features:";
+        } else if (lower.includes('budget') || lower.includes('cheap') || lower.includes('100')) {
+          matchedCars = cars.filter((c) => c.pricePerDay <= 95).slice(0, 2);
+          aiText = "Here are our best budget-friendly rental options under $100/day:";
+        } else {
+          matchedCars = [cars[0], cars[1]].filter(Boolean);
+          aiText = `Based on your request "${textToSend}", I highly recommend checking out these featured rentals:`;
+        }
       }
 
       setMessages((prev) => [
@@ -96,7 +96,7 @@ export const AiAssistantWidget: React.FC<AiAssistantWidgetProps> = ({
           timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         },
       ]);
-    }, 600);
+    });
   };
 
   return (

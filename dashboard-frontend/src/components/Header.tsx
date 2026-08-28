@@ -26,6 +26,7 @@ interface HeaderProps {
   onOpenSearch: () => void;
   onOpenNotifications: () => void;
   onOpenAutomations?: () => void;
+  onLogout?: () => void;
   searchQuery: string;
   setSearchQuery: (q: string) => void;
 }
@@ -38,6 +39,7 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenSearch,
   onOpenNotifications,
   onOpenAutomations,
+  onLogout,
   searchQuery,
   setSearchQuery,
 }) => {
@@ -268,7 +270,15 @@ export const Header: React.FC<HeaderProps> = ({
                 <button onClick={() => setIsUserMenuOpen(false)} className="w-full text-left px-4 py-1.5 hover:bg-slate-50 cursor-pointer">Manage Dealerships</button>
                 <button onClick={() => setIsUserMenuOpen(false)} className="w-full text-left px-4 py-1.5 hover:bg-slate-50 cursor-pointer">Subscription & Billing</button>
                 <div className="my-1 border-t border-slate-100" />
-                <button onClick={() => setIsUserMenuOpen(false)} className="w-full text-left px-4 py-1.5 text-red-600 hover:bg-red-50 font-medium cursor-pointer">Log out</button>
+                <button
+                  onClick={() => {
+                    setIsUserMenuOpen(false);
+                    if (onLogout) onLogout();
+                  }}
+                  className="w-full text-left px-4 py-1.5 text-red-600 hover:bg-red-50 font-medium cursor-pointer"
+                >
+                  Log out
+                </button>
               </div>
             </div>
           )}

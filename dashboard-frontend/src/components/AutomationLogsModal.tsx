@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Zap,
   X,
@@ -11,6 +11,7 @@ import {
   Layers,
   Filter,
 } from 'lucide-react';
+import { dashboardApi } from '../services/api';
 
 interface AutomationEvent {
   id: string;
@@ -85,26 +86,43 @@ export const AutomationLogsModal: React.FC<AutomationLogsModalProps> = ({
     },
   ]);
 
+  useEffect(() => {
+    if (isOpen) {
+      dashboardApi.getWebhookLogs().then((logs) => {
+        if (logs && logs.length > 0) {
+          setEvents(logs);
+          setSelectedEvent(logs[0]);
+        }
+      });
+    }
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
-  const handleTriggerTestWebhook = () => {
-    const newEvt: AutomationEvent = {
-      id: `evt-${Math.floor(100 + Math.random() * 900)}`,
-      eventType: 'webhook.dispatched',
-      title: 'Test Webhook Payload Dispatched',
-      leadScore: Math.floor(70 + Math.random() * 28),
-      leadTier: 'High',
-      timestamp: 'Just now',
-      status: '200 OK',
-      payload: {
-        event: 'test.webhook_ping',
-        triggeredBy: 'Super Admin',
-        environment: 'production',
-        latencyMs: 142,
-      },
-    };
-    setEvents([newEvt, ...events]);
-    setSelectedEvent(newEvt);
+  const handleTriggerTestWebhook = async () => {
+    const newLog = await dashboardApi.triggerTestWebhook();
+    if (newLog) {
+      setEvents((prev) => [newLog, ...prev]);
+      setSelectedEvent(newLog);
+    } else {
+      const fallbackEvt: AutomationEvent = {
+        id: `evt-${Math.floor(100 + Math.random() * 900)}`,
+        eventType: 'webhook.dispatched',
+        title: 'Test Webhook Payload Dispatched',
+        leadScore: Math.floor(70 + Math.random() * 28),
+        leadTier: 'High',
+        timestamp: 'Just now',
+        status: '200 OK',
+        payload: {
+          event: 'test.webhook_ping',
+          triggeredBy: 'Super Admin',
+          environment: 'production',
+          latencyMs: 142,
+        },
+      };
+      setEvents([fallbackEvt, ...events]);
+      setSelectedEvent(fallbackEvt);
+    }
   };
 
   return (

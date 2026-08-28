@@ -2,12 +2,17 @@ from rest_framework import serializers
 from .models import Booking, Transaction
 
 class TransactionSerializer(serializers.ModelSerializer):
+    vehicle_name = serializers.CharField(source='booking.vehicle.name', read_only=True)
+    customer_name = serializers.CharField(source='booking.customer_name', read_only=True)
+
     class Meta:
         model = Transaction
         fields = [
             'id',
             'transaction_code',
             'booking',
+            'vehicle_name',
+            'customer_name',
             'payment_method',
             'amount',
             'status',
@@ -41,3 +46,4 @@ class BookingSerializer(serializers.ModelSerializer):
             'transactions',
             'created_at',
         ]
+        read_only_fields = ['booking_reference']

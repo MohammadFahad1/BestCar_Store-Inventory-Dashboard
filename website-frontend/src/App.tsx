@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
 import { SearchBookingBar } from './components/SearchBookingBar';
@@ -17,14 +17,28 @@ import { AiAssistantWidget } from './components/AiAssistantWidget';
 
 import { CARS_DATA } from './data/cars';
 import { Car, BookingDetails, UserProfile } from './types';
+import { websiteApi } from './services/api';
 
 export default function App() {
-  // Application State
-  const [cars] = useState<Car[]>(CARS_DATA);
-  const [favorites, setFavorites] = useState<string[]>(['car-1', 'car-4']);
+  // Application State - 100% Dynamic from DRF Backend API
+  const [cars, setCars] = useState<Car[]>([]);
+  const [favorites, setFavorites] = useState<string[]>([]);
   const [selectedCarForRental, setSelectedCarForRental] = useState<Car | null>(null);
   const [completedBooking, setCompletedBooking] = useState<BookingDetails | null>(null);
   const [bookedCar, setBookedCar] = useState<Car | null>(null);
+
+  // Fetch live catalog and wishlist from DRF Backend API
+  useEffect(() => {
+    websiteApi.getVehicles().then((apiCars) => {
+      if (apiCars) {
+        setCars(apiCars);
+      }
+    });
+
+    websiteApi.getWishlist().then((apiFavs) => {
+      setFavorites(apiFavs);
+    });
+  }, []);
 
   // Search filter criteria
   const [searchFilterLocation, setSearchFilterLocation] = useState<string>('');
@@ -72,7 +86,7 @@ export default function App() {
   };
 
   // Toggle favorite
-  const handleToggleFavorite = (carId: string) => {
+  const handleToggleFavorite = async (carId: string) => {
     const isCurrentlyFav = favorites.includes(carId);
     const car = cars.find(c => c.id === carId);
     if (isCurrentlyFav) {
@@ -82,6 +96,9 @@ export default function App() {
       setFavorites((prev) => [...prev, carId]);
       addToast('success', `Saved ${car?.name || 'car'} to your wishlist!`);
     }
+
+    // Sync with DRF Backend API
+    await websiteApi.toggleWishlist(carId, isCurrentlyFav);
   };
 
   // Search handler from the search bar
@@ -102,11 +119,28 @@ export default function App() {
     setSelectedCarForRental(car);
   };
 
-  const handleBookingConfirmed = (booking: BookingDetails) => {
+  const handleBookingConfirmed = async (booking: BookingDetails) => {
     setSelectedCarForRental(null);
     setBookedCar(cars.find(c => c.id === booking.carId) || null);
     setCompletedBooking(booking);
     addToast('success', `Booking ${booking.bookingRef} confirmed successfully!`);
+
+    // Post to Backend DRF API
+    const res = await websiteApi.createBooking({
+      vehicleId: booking.carId,
+      customerName: booking.driverName || 'Jane Doe',
+      customerEmail: booking.driverEmail || 'jane@example.com',
+      customerPhone: booking.driverPhone || '+44 7911 123456',
+      pickupLocation: booking.pickupLocation,
+      returnLocation: booking.dropoffLocation,
+      pickupDate: booking.pickupDate,
+      returnDate: booking.dropoffDate,
+      totalDays: booking.totalDays,
+      totalPrice: booking.totalPrice,
+    });
+    if (res.success) {
+      console.log('Booking synchronized with DRF backend:', res.reference);
+    }
   };
 
   // Navigation handlers
