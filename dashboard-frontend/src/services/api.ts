@@ -1,6 +1,6 @@
 import { CarItem, Transaction } from '../types';
 
-const API_BASE_URL = 'http://localhost:8000/api';
+const API_BASE_URL = (import.meta as any).env?.VITE_API_BASE_URL || 'http://localhost:9003/api';
 
 export interface DashboardKpis {
   weeklyEarnings: number;

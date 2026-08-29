@@ -9,19 +9,19 @@ A modern, full-stack, pixel-perfect Car Rental Customer Website, Store & Invento
 This repository contains a full-stack architecture with three integrated modules:
 
 1. **Customer Front-End (`website-frontend`)**:
-   - **URL**: `http://localhost:3000/`
+   - **URL**: `http://localhost:9001/`
    - **Features**: Dynamic car rental booking, location search bar filter, category deals, vehicle detail modal with interactive pricing calculator, wishlist drawer with local & backend persistence, and toast notification alerts.
    - **AI Feature**: **BestCar AI Concierge** — a floating AI assistant widget that processes natural language queries or quick prompt shortcuts (*"Family Trip 7-seater"*, *"Luxury SUV"*, *"Budget deals under $100/day"*, *"Long Range Electric"*), recommending tailored vehicles from the catalog.
 
 2. **Admin Dashboard (`dashboard-frontend`)**:
-   - **URL**: `http://localhost:3002/`
+   - **URL**: `http://localhost:9002/`
    - **Features**: Store & inventory management, interactive Sales by Countries map (`react-simple-maps`), real-time KPI cards, sales analytics area chart, POS sale drawer, add-new vehicle modal, transactions manager, and responsive navigation sidebar.
    - **Automation Feature**: **AI Automations & Webhooks Drawer** — real-time automated lead scoring, CRM sync logs, payload inspector, and test webhook trigger runner.
 
 3. **Backend API & Automations (`backend`)**:
-   - **URL**: `http://localhost:8000/`
-   - **Swagger Docs**: `http://localhost:8000/swagger/`
-   - **ReDoc Docs**: `http://localhost:8000/redoc/`
+   - **URL**: `http://localhost:9003/`
+   - **Swagger Docs**: `http://localhost:9003/swagger/`
+   - **ReDoc Docs**: `http://localhost:9003/redoc/`
    - **Tech**: Django 5.x + Django REST Framework + JWT Authentication + SQLite / PostgreSQL support.
    - **Automations**: Automated AI lead qualification and outbound webhook payload dispatching upon rental booking creation.
 
@@ -58,7 +58,27 @@ This repository contains a full-stack architecture with three integrated modules
 
 ---
 
-## 🚀 Quick Start & Local Setup
+## 🐳 One-Command Docker Setup
+
+Run the entire full-stack platform (Backend, Website, and Admin Dashboard) with a single command:
+
+```bash
+docker-compose up -d --build
+```
+
+Access the applications in your browser:
+- **Customer Website**: `http://localhost:9001/`
+- **Admin Dashboard**: `http://localhost:9002/`
+- **Backend API & Swagger**: `http://localhost:9003/swagger/`
+
+To stop the containers:
+```bash
+docker-compose down
+```
+
+---
+
+## 🚀 Local Development Setup (Manual)
 
 ### 1. Backend Service (`backend`)
 ```bash
@@ -69,9 +89,9 @@ pip install -r requirements.txt
 python manage.py check
 python manage.py migrate
 python seed_data.py
-python manage.py runserver 8000
+python manage.py runserver 9003
 ```
-Open **http://localhost:8000/swagger/** for Interactive API Documentation.
+Open **http://localhost:9003/swagger/** for Interactive API Documentation.
 
 ### 2. Customer Website (`website-frontend`)
 ```bash
@@ -79,7 +99,7 @@ cd website-frontend
 npm install
 npm run dev
 ```
-Open **http://localhost:3000/** in your browser.
+Open **http://localhost:9001/** in your browser.
 
 ### 3. Admin Dashboard (`dashboard-frontend`)
 ```bash
@@ -87,7 +107,7 @@ cd dashboard-frontend
 npm install
 npm run dev
 ```
-Open **http://localhost:3002/** in your browser.
+Open **http://localhost:9002/** in your browser.
 
 ---
 

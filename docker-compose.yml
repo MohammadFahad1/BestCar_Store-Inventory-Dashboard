@@ -1,0 +1,37 @@
+services:
+  # 1. Django REST API & Automations Backend (Port 9003)
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: bestcar_backend
+    ports:
+      - "9003:8000"
+    environment:
+      - DEBUG=1
+      - ALLOWED_HOSTS=*
+    restart: unless-stopped
+
+  # 2. Customer Front-End Website (Port 9001)
+  website-frontend:
+    build:
+      context: ./website-frontend
+      dockerfile: Dockerfile
+    container_name: bestcar_website
+    ports:
+      - "9001:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+  # 3. Store & Inventory Admin Dashboard (Port 9002)
+  dashboard-frontend:
+    build:
+      context: ./dashboard-frontend
+      dockerfile: Dockerfile
+    container_name: bestcar_dashboard
+    ports:
+      - "9002:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
