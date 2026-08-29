@@ -37,7 +37,7 @@ export default function App() {
   const [kpis, setKpis] = useState<DashboardKpis | null>(null);
 
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const [selectedDateRange, setSelectedDateRange] = useState('01 Jan 2024 - 07 Jan 2024');
+  const [selectedDateRange, setSelectedDateRange] = useState('24 Aug 2026 - 29 Aug 2026');
   const [isStatsCollapsed, setIsStatsCollapsed] = useState(false);
 
   // Modals & Drawers
@@ -49,6 +49,7 @@ export default function App() {
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const [isAutomationLogsOpen, setIsAutomationLogsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [unreadCount, setUnreadCount] = useState<number>(0);
 
   // Fetch live API metrics on mount and poll every 3 seconds for real-time website updates
   useEffect(() => {
@@ -153,6 +154,7 @@ export default function App() {
         onLogout={handleLogout}
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
+        unreadCount={unreadCount}
       />
 
       {/* Main Workspace Layout */}
@@ -266,6 +268,7 @@ export default function App() {
       <NotificationsPopover
         isOpen={isNotificationsOpen}
         onClose={() => setIsNotificationsOpen(false)}
+        onUnreadCountChange={setUnreadCount}
       />
 
       <AutomationLogsModal

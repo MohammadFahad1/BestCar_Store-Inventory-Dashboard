@@ -178,7 +178,7 @@ export const dashboardApi = {
   },
 
   // Fetch Sales Analytics Chart Data
-  async getSalesChart(year: string = '2024'): Promise<{ month: string; sales: number }[]> {
+  async getSalesChart(year: string = '2026'): Promise<{ month: string; sales: number }[]> {
     try {
       const res = await fetch(`${API_BASE_URL}/analytics/sales-chart/?year=${year}`);
       if (!res.ok) throw new Error(`HTTP error ${res.status}`);

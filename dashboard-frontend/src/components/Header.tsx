@@ -29,6 +29,7 @@ interface HeaderProps {
   onLogout?: () => void;
   searchQuery: string;
   setSearchQuery: (q: string) => void;
+  unreadCount?: number;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -42,6 +43,7 @@ export const Header: React.FC<HeaderProps> = ({
   onLogout,
   searchQuery,
   setSearchQuery,
+  unreadCount = 0,
 }) => {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isComingSoonOpen, setIsComingSoonOpen] = useState(false);
@@ -213,25 +215,30 @@ export const Header: React.FC<HeaderProps> = ({
           {isFullscreen ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
         </button>
 
-        {/* Mail Icon with Badge */}
+        {/* Mail Icon with Dynamic Badge */}
         <button
           onClick={onOpenNotifications}
-          className="relative p-1.5 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors"
-          title="Messages"
+          className="relative p-1.5 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer"
+          title="Messages & Notifications"
         >
           <Mail className="w-4 h-4" />
-          <span className="absolute -top-1 -right-1 bg-red-600 text-white font-bold text-[9px] w-4 h-4 rounded-full flex items-center justify-center ring-2 ring-white">
-            01
-          </span>
+          {unreadCount > 0 && (
+            <span className="absolute -top-1 -right-1 bg-red-600 text-white font-bold text-[9px] min-w-[16px] h-4 px-1 rounded-full flex items-center justify-center ring-2 ring-white">
+              {unreadCount > 9 ? '9+' : `0${unreadCount}`.slice(-2)}
+            </span>
+          )}
         </button>
 
         {/* Notification Bell */}
         <button
           onClick={onOpenNotifications}
-          className="p-1.5 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors"
+          className="relative p-1.5 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer"
           title="Notifications"
         >
           <Bell className="w-4 h-4" />
+          {unreadCount > 0 && (
+            <span className="absolute top-1 right-1 w-2 h-2 bg-[#f97316] rounded-full ring-2 ring-white animate-pulse" />
+          )}
         </button>
 
         {/* Settings */}

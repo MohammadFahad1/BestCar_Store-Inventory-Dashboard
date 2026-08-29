@@ -36,7 +36,7 @@ class Vehicle(models.Model):
     name = models.CharField(max_length=150)
     brand = models.CharField(max_length=100)
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, related_name='vehicles')
-    model_year = models.IntegerField(default=2024)
+    model_year = models.IntegerField(default=2026)
     price_per_day = models.DecimalField(max_digits=10, decimal_places=2)
     seats = models.IntegerField(default=5)
     transmission = models.CharField(max_length=20, choices=TRANSMISSION_CHOICES, default='Automatic')

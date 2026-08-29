@@ -20,13 +20,14 @@ export const GreetingBar: React.FC<GreetingBarProps> = ({
 }) => {
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
 
+  const currentYear = new Date().getFullYear();
   const datePresets = [
-    '01 Jan 2024 - 07 Jan 2024',
-    'Today (07 Jan 2024)',
+    `24 Aug ${currentYear} - 29 Aug ${currentYear}`,
+    `Today (29 Aug ${currentYear})`,
     'Last 7 Days',
-    'This Month (Jan 2024)',
-    'Last Quarter (Q4 2023)',
-    'Year to Date (2024)',
+    `This Month (Aug ${currentYear})`,
+    `Last Quarter (Q2 ${currentYear})`,
+    `Year to Date (${currentYear})`,
   ];
 
   return (

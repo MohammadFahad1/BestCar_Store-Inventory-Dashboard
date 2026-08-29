@@ -8,12 +8,12 @@ interface SalesAnalyticsChartProps {
 }
 
 export const SalesAnalyticsChart: React.FC<SalesAnalyticsChartProps> = ({ className = '' }) => {
-  const [selectedYear, setSelectedYear] = useState('2024');
+  const [selectedYear, setSelectedYear] = useState('2026');
   const [isYearDropdownOpen, setIsYearDropdownOpen] = useState(false);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [chartData, setChartData] = useState<{ month: string; sales: number }[]>(monthlySalesData);
 
-  const years = ['2024', '2023', '2022', '2021'];
+  const years = ['2026', '2025', '2024', '2023'];
 
   useEffect(() => {
     dashboardApi.getSalesChart(selectedYear).then((data) => {
@@ -228,25 +228,28 @@ export const SalesAnalyticsChart: React.FC<SalesAnalyticsChartProps> = ({ classN
         </svg>
 
         {/* Floating Tooltip */}
-        {hoveredIndex !== null && points[hoveredIndex] && (
-          <div
-            className="absolute -top-1 pointer-events-none transform -translate-x-1/2 bg-slate-900 text-white px-3 py-1.5 rounded-lg text-xs shadow-xl transition-all duration-150 z-20"
-            style={{
-              left: `${(points[hoveredIndex].x / width) * 100}%`,
-              top: `${Math.max(10, (points[hoveredIndex].y / height) * 100 - 24)}%`,
-            }}
-          >
-            <div className="font-bold text-[#fb923c]">
-              {points[hoveredIndex].data.month} {selectedYear}
+        {hoveredIndex !== null && points[hoveredIndex] && (() => {
+          const item = points[hoveredIndex].data as any;
+          return (
+            <div
+              className="absolute -top-1 pointer-events-none transform -translate-x-1/2 bg-slate-900 text-white px-3 py-1.5 rounded-lg text-xs shadow-xl transition-all duration-150 z-20"
+              style={{
+                left: `${(points[hoveredIndex].x / width) * 100}%`,
+                top: `${Math.max(10, (points[hoveredIndex].y / height) * 100 - 24)}%`,
+              }}
+            >
+              <div className="font-bold text-[#fb923c]">
+                {item.month} {selectedYear}
+              </div>
+              <div className="text-[11px] text-slate-300">
+                Revenue: <span className="font-semibold text-white">${((item.sales || item.revenue || 0) * 1000).toLocaleString()}</span>
+              </div>
+              <div className="text-[10px] text-slate-400">
+                {item.units || Math.round((item.sales || 0) * 12)} vehicles rented
+              </div>
             </div>
-            <div className="text-[11px] text-slate-300">
-              Revenue: <span className="font-semibold text-white">${((points[hoveredIndex].data.sales || points[hoveredIndex].data.revenue || 0) * 1000).toLocaleString()}</span>
-            </div>
-            <div className="text-[10px] text-slate-400">
-              {points[hoveredIndex].data.units || Math.round((points[hoveredIndex].data.sales || 0) * 12)} vehicles rented
-            </div>
-          </div>
-        )}
+          );
+        })()}
       </div>
     </div>
   );

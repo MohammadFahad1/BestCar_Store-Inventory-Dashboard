@@ -7,17 +7,21 @@ function transformVehicle(item: any): Car {
   return {
     id: `car-${item.id}`,
     name: item.name,
+    category: 'Popular',
     type: item.category_name || 'SUV',
     pricePerDay: Number(item.price_per_day),
-    seats: item.seats || 5,
-    transmission: item.transmission || 'Automatic',
-    fuelType: item.fuel_type || 'Petrol',
-    mileageLimit: item.mileage_limit || 'Unlimited',
+    capacity: item.seats || 5,
+    gasolineCapacity: item.fuel_type === 'Electric' ? 'Electric (400 mi)' : '70L',
+    transmission: item.transmission === 'Manual' ? 'Manual' : 'Automatic',
+    horsepower: 350,
+    mpg: '28 MPG',
     image: item.image_url || item.image_file || '/cars/range_rover.jpg',
-    location: item.location || 'London Heathrow',
     rating: Number(item.rating) || 4.9,
-    reviewsCount: item.reviews_count || 120,
+    reviewCount: item.reviews_count || 120,
     isPopular: item.is_featured,
+    features: ['GPS Navigation', 'Bluetooth', 'Leather Seats', 'Climate Control'],
+    description: 'Experience premium luxury and comfort with top tier performance and smooth dynamics.',
+    locationAvailability: ['London Central (King\'s Cross)', 'London Heathrow Airport (LHR)', 'Gatwick Airport (LGW)'],
   };
 }
 

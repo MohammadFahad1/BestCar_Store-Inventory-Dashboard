@@ -48,21 +48,29 @@ export const KpiCards: React.FC<KpiCardsProps> = ({
           </div>
         </div>
 
-        {/* Custom SVG Illustration for Weekly Earning */}
+        {/* Image Illustration for Weekly Earning */}
         <div className="w-24 sm:w-28 md:w-32 lg:w-36 h-20 sm:h-24 flex items-center justify-end">
-          <MoneyBagChartIllustration className="w-full h-full object-contain" />
+          <img
+            src="/weekly_earning_growth.png"
+            alt="Weekly Earning Growth"
+            className="w-full h-full object-contain"
+          />
         </div>
       </div>
 
       {/* Card 2: Total Sales (Span 3 cols on lg / 3.5 cols on md) */}
-      <div className="md:col-span-6 lg:col-span-3 bg-white rounded-2xl p-5 md:p-6 border border-slate-100/90 shadow-xs flex flex-col justify-between relative overflow-hidden group hover:shadow-md transition-all">
+      <div className="md:col-span-6 lg:col-span-3 bg-amber-500 text-white rounded-2xl p-5 md:p-6 border border-slate-100/90 shadow-xs flex flex-col justify-between relative overflow-hidden group hover:shadow-md transition-all">
         <div className="flex items-start justify-between">
-          <div className="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center">
-            <TotalSalesCoinsIcon className="w-6 h-6" />
+          <div className="w-14 h-14 rounded-2xl bg-amber-500/90 border border-amber-500/80 flex items-center justify-center p-2 shadow-2xs shrink-0">
+            <img
+              src="/icon_no_of_total_sales.png"
+              alt="Total Sales"
+              className="w-10 h-10 object-contain drop-shadow-xs contrast-125 brightness-95 transition-transform group-hover:scale-105"
+            />
           </div>
           <button
             onClick={onRefreshSales}
-            className="p-1 text-slate-400 hover:text-slate-600 transition-colors"
+            className="p-1 text-white hover:text-slate-600 transition-colors cursor-pointer"
             title="Refresh Sales"
           >
             <RotateCw className="w-3.5 h-3.5" />
@@ -71,25 +79,29 @@ export const KpiCards: React.FC<KpiCardsProps> = ({
 
         <div className="mt-4 space-y-1">
           <div className="flex items-baseline justify-between">
-            <span className="text-2xl font-bold text-slate-900">{totalSales}</span>
+            <span className="text-2xl font-bold text-white">{totalSales}</span>
             <span className="text-xs font-semibold text-emerald-600 flex items-center gap-0.5">
               <ArrowUp className="w-3 h-3 stroke-[3]" />
               {salesGrowth}
             </span>
           </div>
-          <p className="text-xs font-medium text-slate-500">Total Sales</p>
+          <p className="text-xs font-medium text-white">No of Total Sales</p>
         </div>
       </div>
 
       {/* Card 3: Purchased Goods (Span 3 cols on lg / 3.5 cols on md) */}
-      <div className="md:col-span-6 lg:col-span-3 bg-white rounded-2xl p-5 md:p-6 border border-slate-100/90 shadow-xs flex flex-col justify-between relative overflow-hidden group hover:shadow-md transition-all">
+      <div className="md:col-span-6 lg:col-span-3 bg-[#092c4c] rounded-2xl p-5 md:p-6 border border-slate-100/90 shadow-xs flex flex-col justify-between relative overflow-hidden group hover:shadow-md transition-all">
         <div className="flex items-start justify-between">
-          <div className="w-10 h-10 rounded-xl bg-orange-50 flex items-center justify-center">
-            <PurchasedGoodsBagIcon className="w-6 h-6" />
+          <div className="w-14 h-14 rounded-2xl flex items-center justify-center p-2 shadow-2xs shrink-0">
+            <img
+              src="/no_of_purchased_goods_icon.png"
+              alt="Purchased Goods"
+              className="w-10 h-10 object-contain drop-shadow-xs contrast-125 brightness-95 transition-transform group-hover:scale-105"
+            />
           </div>
           <button
             onClick={onRefreshPurchases}
-            className="p-1 text-slate-400 hover:text-slate-600 transition-colors"
+            className="p-1 text-slate-400 hover:text-white transition-colors cursor-pointer"
             title="Refresh Purchases"
           >
             <RotateCw className="w-3.5 h-3.5" />
@@ -98,12 +110,12 @@ export const KpiCards: React.FC<KpiCardsProps> = ({
 
         <div className="mt-4 space-y-1">
           <div className="flex items-baseline justify-between">
-            <span className="text-2xl font-bold text-slate-900">{purchasedGoods}</span>
+            <span className="text-2xl font-bold text-white">{purchasedGoods}</span>
             <span className="text-xs font-semibold text-rose-500 flex items-center gap-0.5">
               {goodsGrowth}
             </span>
           </div>
-          <p className="text-xs font-medium text-slate-500">Purchased Goods</p>
+          <p className="text-xs font-medium text-white">No of Purchased Goods</p>
         </div>
       </div>
     </div>

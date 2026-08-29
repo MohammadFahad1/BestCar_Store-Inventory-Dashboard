@@ -1,59 +1,79 @@
-# BestCar - Car Rental Platform & Admin Dashboard
+# BestCar - Car Rental Platform & Store/Inventory Admin Dashboard
 
-A modern, high-performance, pixel-perfect Car Rental Customer Website and Store & Inventory Admin Dashboard built for the **Digital Pylot Technical Assessment Task**.
+A modern, full-stack, pixel-perfect Car Rental Customer Website, Store & Inventory Admin Dashboard, and Django REST API with AI Automations built for the **Digital Pylot Technical Assessment Task**.
 
 ---
 
-## 🌟 Projects Overview
+## 🌟 Project Overview
 
-This repository contains two fully functional applications:
+This repository contains a full-stack architecture with three integrated modules:
 
 1. **Customer Front-End (`website-frontend`)**:
    - **URL**: `http://localhost:3000/`
-   - **Features**: Interactive car rental booking, location search filter, category deals, vehicle detail modal with pricing calculator, wishlist drawer, and real-time toast alerts.
-   - **AI Feature**: **BestCar AI Concierge** — a floating AI assistant widget that provides smart vehicle recommendations based on trip type, budget, passenger count, and long-range preferences.
+   - **Features**: Dynamic car rental booking, location search bar filter, category deals, vehicle detail modal with interactive pricing calculator, wishlist drawer with local & backend persistence, and toast notification alerts.
+   - **AI Feature**: **BestCar AI Concierge** — a floating AI assistant widget that processes natural language queries or quick prompt shortcuts (*"Family Trip 7-seater"*, *"Luxury SUV"*, *"Budget deals under $100/day"*, *"Long Range Electric"*), recommending tailored vehicles from the catalog.
 
 2. **Admin Dashboard (`dashboard-frontend`)**:
    - **URL**: `http://localhost:3002/`
-   - **Features**: Store & inventory overview, interactive Sales by Countries map (`react-simple-maps`), KPI cards, sales analytics area chart, POS drawer, add-new vehicle modal, transactions manager, and responsive sticky navigation sidebar.
-   - **Automation Feature**: **AI Automations & Webhooks Drawer** — real-time automated lead scoring, CRM sync logs, low-stock notifications, and JSON payload inspector.
+   - **Features**: Store & inventory management, interactive Sales by Countries map (`react-simple-maps`), real-time KPI cards, sales analytics area chart, POS sale drawer, add-new vehicle modal, transactions manager, and responsive navigation sidebar.
+   - **Automation Feature**: **AI Automations & Webhooks Drawer** — real-time automated lead scoring, CRM sync logs, payload inspector, and test webhook trigger runner.
+
+3. **Backend API & Automations (`backend`)**:
+   - **URL**: `http://localhost:8000/`
+   - **Swagger Docs**: `http://localhost:8000/swagger/`
+   - **ReDoc Docs**: `http://localhost:8000/redoc/`
+   - **Tech**: Django 5.x + Django REST Framework + JWT Authentication + SQLite / PostgreSQL support.
+   - **Automations**: Automated AI lead qualification and outbound webhook payload dispatching upon rental booking creation.
 
 ---
 
 ## 🤖 AI Feature Implementation (15% Evaluation Weight)
 
-### **BestCar AI Concierge & Vehicle Matcher**
-- **Location**: Floating widget on the bottom-right corner of the Customer Website (`website-frontend`).
+### **BestCar AI Concierge & Vehicle Recommendation Engine**
+- **Location**: Floating assistant widget in `website-frontend/src/components/AiAssistantWidget.tsx`.
 - **Capabilities**:
-  - Accepts natural language queries or quick prompt shortcuts (*"Family Trip 7-seater"*, *"Luxury SUV"*, *"Budget deals under $100/day"*, *"Long Range Electric"*).
-  - Computes vehicle suitability scores and generates instant recommendation cards with pricing and vehicle specs.
-  - Features direct **"Book Now"** CTA buttons inside chat messages that trigger the vehicle rental modal.
+  - Accepts natural language inputs or quick prompt chips.
+  - Connects to `/api/automations/ai-concierge/` with optional external LLM API fallback (Google Gemini / OpenAI API).
+  - High-performance intelligence rule engine matching multi-attribute queries (passenger seats, fuel type, transmission, price tier, and category).
+  - Direct **"Book Now"** CTA buttons inside chat messages triggering the vehicle rental workflow.
 
 ---
 
 ## ⚡ API & Automation Architecture (15% Evaluation Weight)
 
-### **Automated Lead Qualification & Webhook Activity Log**
-- **Location**: Accessible via the **"AI Automations"** header button on the Admin Dashboard (`dashboard-frontend`).
+### **Automated Lead Qualification & Webhook Engine**
+- **Location**: Admin Dashboard header button **"AI Automations"** (`dashboard-frontend/src/components/AutomationLogsModal.tsx`).
 - **Capabilities**:
-  - Automatically qualifies customer leads (*High / Medium / Low Lead Score*) based on rental duration and vehicle category.
-  - Logs automated webhook dispatches (`booking.created`, `lead.qualified`, `inventory.alert`) with latency tracking and status codes (`200 OK`).
-  - Includes an interactive **JSON Payload Inspector** and a **"Trigger Test Webhook"** runner to simulate real-time workflow events.
+  - **Automated Lead Scoring**: Every booking creation calculates an AI Lead Score (`High` / `Medium` / `Low`) based on rental duration and vehicle price.
+  - **Webhook Dispatches**: Dispatches `booking.created`, `lead.qualified`, and `webhook.dispatched` events with latency metrics and status codes (`200 OK`).
+  - **JSON Payload Inspector**: View formatted payload structures, latency, and status.
+  - **Outbound HTTP Webhook Dispatch**: Supports real HTTP POST webhook dispatches to external receivers (`WEBHOOK_URL` environment variable).
 
 ---
 
 ## 🛠️ Technology Stack
 
-- **Framework**: React 19 + TypeScript
-- **Bundler & Dev Server**: Vite 6
-- **Styling**: Tailwind CSS v4 + Vanilla CSS Utilities
-- **Mapping & Data Viz**: `react-simple-maps` + TopoJSON + Lucide Icons + Motion
+- **Frontend**: React 19, TypeScript, Vite 6, Tailwind CSS v4, Motion, Lucide Icons, `react-simple-maps`.
+- **Backend**: Django 5.x, Django REST Framework, `drf-yasg` (Swagger), `djangorestframework-simplejwt`, `django-cors-headers`, `django-filter`, `Pillow`, `requests`, `gunicorn`.
 
 ---
 
 ## 🚀 Quick Start & Local Setup
 
-### 1. Customer Website (`website-frontend`)
+### 1. Backend Service (`backend`)
+```bash
+cd backend
+python3 -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+pip install -r requirements.txt
+python manage.py check
+python manage.py migrate
+python seed_data.py
+python manage.py runserver 8000
+```
+Open **http://localhost:8000/swagger/** for Interactive API Documentation.
+
+### 2. Customer Website (`website-frontend`)
 ```bash
 cd website-frontend
 npm install
@@ -61,7 +81,7 @@ npm run dev
 ```
 Open **http://localhost:3000/** in your browser.
 
-### 2. Admin Dashboard (`dashboard-frontend`)
+### 3. Admin Dashboard (`dashboard-frontend`)
 ```bash
 cd dashboard-frontend
 npm install
@@ -71,18 +91,27 @@ Open **http://localhost:3002/** in your browser.
 
 ---
 
-## 📝 Verification & Build Commands
+## 🧪 Verification & Automated Tests
 
-Both projects compile cleanly with zero errors:
+All modules pass build, typecheck, and test suites with zero errors:
 
 ```bash
-# Typecheck & Build Website
-cd website-frontend
-npm run lint
-npm run build
+# Backend Django Unit Tests
+cd backend
+./venv/bin/python manage.py test
 
-# Typecheck & Build Dashboard
-cd dashboard-frontend
-npm run lint
-npm run build
+# Frontends Typecheck & Build
+cd website-frontend && npm run lint && npm run build
+cd ../dashboard-frontend && npm run lint && npm run build
 ```
+
+---
+
+## 🌐 Live Deployment Guide
+
+1. **Deploy Backend (Render / Railway / Fly.io)**:
+   - Command: `gunicorn best_car.wsgi:application`
+   - Set environment variables: `DEBUG=False`, `ALLOWED_HOSTS=*`, `WEBHOOK_URL=<optional_webhook_endpoint>`.
+2. **Deploy Frontends (Vercel / Netlify)**:
+   - Build Command: `npm run build`
+   - Output Directory: `dist`
